@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: YOUR_USERNAME/YOUR_REPO  # 替换为你的 GitHub 用户名/仓库名
+  repo: wanmoxing-website-2026-v1
   branch: main
 
 # 本地开发模式（可选）
