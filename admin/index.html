@@ -8,9 +8,39 @@
 <body>
  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.4.0/dist/decap-cms.js"></script>
  <script>
- if (window.CMS) {
- window.CMS.CONFIG.configPath = '/admin/config.yml';
+ var CMSManualInit = function() {
+ CMS.init({
+ config: {
+ backend: { name: "github", auth_type: "pkce", app_id: "Ov23lihO574fYCPDZJrx", repo: "supremegcg/wanmoxing-website-2026-v1" },
+ media_folder: "images",
+ public_folder: "/images",
+ locale: "zh_Hans",
+ collections: [
+ { name: "settings", label: "网站设置", files: [{ name: "site", label: "基本信息", file: "data/settings.json", fields: [
+ { label: "公司名称", name: "company_name", widget: "string" },
+ { label: "公司简介(中文)", name: "company_intro_cn", widget: "text" },
+ { label: "公司简介(英文)", name: "company_intro_en", widget: "text" },
+ { label: "联系电话", name: "phone", widget: "string" },
+ { label: "邮箱", name: "email", widget: "string" }
+ ]}]},
+ { name: "portfolio", label: "项目案例", folder: "data/portfolio", create: true, slug: "{{slug}}", fields: [
+ { label: "名称", name: "name", widget: "string" },
+ { label: "分类", name: "category", widget: "select", options: ["电动工具产品案例","清洁家电案例","智能设备"] },
+ { label: "封面图", name: "cover_image", widget: "image" },
+ { label: "描述(中文)", name: "description_cn", widget: "text" },
+ { label: "描述(英文)", name: "description_en", widget: "text" }
+ ]},
+ { name: "team", label: "团队成员", folder: "data/team", create: true, slug: "{{slug}}", fields: [
+ { label: "姓名", name: "name", widget: "string" },
+ { label: "职位", name: "position", widget: "string" },
+ { label: "头像", name: "avatar", widget: "image" },
+ { label: "简介(中文)", name: "bio_cn", widget: "text" },
+ { label: "简介(英文)", name: "bio_en", widget: "text" }
+ ]}
+ ]
  }
+ });
+ };
  </script>
 </body>
 </html>
