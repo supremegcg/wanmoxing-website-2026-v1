@@ -1,0 +1,17 @@
+{
+  "siteName": "万摩星设计咨询",
+  "siteDescription": "万摩星设计咨询（苏州）有限公司，专注工业设计，为电动工具、智能设备、清洁家电领域提供从概念到量产的全链路设计服务。",
+  "contactEmail": "onemorethingdesign@163.com",
+  "suzhouOffice": {
+    "name": "万摩星设计咨询（苏州）有限公司",
+    "address": "江苏省苏州市竹园路209号 中国苏州创业园4号楼1708室",
+    "contact": "吴先生",
+    "phone": "15850675918"
+  },
+  "yongkangOffice": {
+    "name": "万摩星工业设计（永康）有限公司",
+    "address": "浙江省永康市五洲路金创大厦13楼东",
+    "contact": "李先生",
+    "phone": "18913537782"
+  }
+}

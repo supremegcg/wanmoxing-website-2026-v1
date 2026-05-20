@@ -1,0 +1,131 @@
+backend:
+  name: github
+  repo: YOUR_USERNAME/YOUR_REPO  # 替换为你的 GitHub 用户名/仓库名
+  branch: main
+
+# 本地开发模式（可选）
+local_backend: false
+
+# 媒体文件存储
+media_folder: "images"
+public_folder: "/images"
+
+# 中文界面
+locale: "zh"
+
+# 内容集合
+collections:
+  # ========== 网站设置 ==========
+  - name: "settings"
+    label: "网站设置"
+    files:
+      - name: "site"
+        label: "基本信息"
+        file: "data/settings.json"
+        fields:
+          - { name: "siteName", label: "网站名称", widget: "string" }
+          - { name: "siteDescription", label: "网站描述", widget: "text" }
+          - { name: "contactEmail", label: "联系邮箱", widget: "string" }
+          - name: "suzhouOffice"
+            label: "苏州公司"
+            widget: "object"
+            fields:
+              - { name: "name", label: "公司全称", widget: "string" }
+              - { name: "address", label: "地址", widget: "string" }
+              - { name: "contact", label: "联系人", widget: "string" }
+              - { name: "phone", label: "电话", widget: "string" }
+          - name: "yongkangOffice"
+            label: "永康公司"
+            widget: "object"
+            fields:
+              - { name: "name", label: "公司全称", widget: "string" }
+              - { name: "address", label: "地址", widget: "string" }
+              - { name: "contact", label: "联系人", widget: "string" }
+              - { name: "phone", label: "电话", widget: "string" }
+
+  # ========== 项目案例 ==========
+  - name: "portfolio"
+    label: "项目案例"
+    folder: "data/portfolio"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "title", label: "项目名称", widget: "string" }
+      - { name: "titleEn", label: "项目名称(英文)", widget: "string" }
+      - name: "category"
+        label: "分类"
+        widget: "select"
+        options:
+          - { label: "电动工具", value: "power-tools" }
+          - { label: "清洁家电", value: "cleaning" }
+          - { label: "智能设备", value: "smart-home" }
+      - { name: "thumbnail", label: "缩略图", widget: "image" }
+      - { name: "description", label: "项目描述", widget: "text" }
+      - { name: "descriptionEn", label: "项目描述(英文)", widget: "text" }
+      - name: "tags"
+        label: "标签"
+        widget: "list"
+        default: []
+      - { name: "featured", label: "首页展示", widget: "boolean", default: false }
+      - { name: "sortOrder", label: "排序(数字越小越靠前)", widget: "number", default: 100 }
+
+  # ========== 团队成员 ==========
+  - name: "team"
+    label: "团队"
+    folder: "data/team"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "name", label: "姓名", widget: "string" }
+      - { name: "role", label: "职位", widget: "string" }
+      - { name: "roleEn", label: "职位(英文)", widget: "string" }
+      - { name: "photo", label: "头像", widget: "image", required: false }
+      - { name: "bio", label: "简介", widget: "text" }
+      - { name: "bioEn", label: "简介(英文)", widget: "text" }
+      - { name: "sortOrder", label: "排序", widget: "number", default: 100 }
+
+  # ========== 服务项目 ==========
+  - name: "services"
+    label: "服务项目"
+    folder: "data/services"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "title", label: "服务名称", widget: "string" }
+      - { name: "titleEn", label: "服务名称(英文)", widget: "string" }
+      - { name: "icon", label: "图标(SVG代码)", widget: "text" }
+      - { name: "description", label: "服务描述", widget: "text" }
+      - { name: "descriptionEn", label: "服务描述(英文)", widget: "text" }
+      - { name: "sortOrder", label: "排序", widget: "number", default: 100 }
+
+  # ========== 合作伙伴 ==========
+  - name: "partners"
+    label: "合作伙伴"
+    folder: "data/partners"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "name", label: "品牌名称", widget: "string" }
+      - { name: "logo", label: "Logo图片", widget: "image", required: false }
+      - { name: "sortOrder", label: "排序", widget: "number", default: 100 }
+
+  # ========== 洞察文章 ==========
+  - name: "insights"
+    label: "洞察文章"
+    folder: "data/insights"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "title", label: "文章标题", widget: "string" }
+      - { name: "titleEn", label: "文章标题(英文)", widget: "string" }
+      - { name: "date", label: "发布日期", widget: "datetime" }
+      - { name: "author", label: "作者", widget: "string" }
+      - { name: "thumbnail", label: "封面图", widget: "image" }
+      - { name: "excerpt", label: "摘要", widget: "text" }
+      - { name: "excerptEn", label: "摘要(英文)", widget: "text" }
+      - { name: "body", label: "正文", widget: "markdown" }
+      - { name: "bodyEn", label: "正文(英文)", widget: "markdown" }
+      - name: "tags"
+        label: "标签"
+        widget: "list"
+        default: []
