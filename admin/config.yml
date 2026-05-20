@@ -1,7 +1,9 @@
 backend:
-  name: github
-  repo: supremegcg/wanmoxing-website-2026-v1
-  branch: main
+ name: github
+ repo: supremegcg/wanmoxing-website-2026-v1
+ branch: main
+ base_url: https://wanmoxing-website-2026-v1.vercel.app
+ auth_endpoint: /api/auth
 
 # 本地开发模式（可选）
 local_backend: false
