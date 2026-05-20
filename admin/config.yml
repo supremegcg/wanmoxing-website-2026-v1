@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: wanmoxing-website-2026-v1
+  repo: supremegcg/wanmoxing-website-2026-v1
   branch: main
 
 # 本地开发模式（可选）
