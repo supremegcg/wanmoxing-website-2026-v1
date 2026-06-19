@@ -1,9 +1,7 @@
 backend:
   name: github
-  repo: supremegcg/wanmoxing-website-2026-v1
+  repo: YOUR_USERNAME/YOUR_REPO  # 替换为你的 GitHub 用户名/仓库名
   branch: main
-  auth_type: pkce
-  app_id: Ov23lihO574fYCPDZJrx
 
 # 本地开发模式（可选）
 local_backend: false
