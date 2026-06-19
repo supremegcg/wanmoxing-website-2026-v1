@@ -9,6 +9,21 @@
   const API_BASE = 'https://wanmoxing-cms.vercel.app';
   let currentLang = localStorage.getItem('lang') || 'zh';
 
+  /**
+   * 修正图片路径：将中文子目录路径映射到根目录
+   * Vercel 静态部署对中文目录名支持不佳，根目录已有同名图片
+   */
+  function fixImagePath(url) {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    var parts = url.split('/');
+    var filename = parts[parts.length - 1];
+    if (url.indexOf('images/') === 0 || url.indexOf('/images/') >= 0) {
+      return 'images/' + filename;
+    }
+    return url;
+  }
+
   async function loadPortfolio() {
     const container = document.querySelector('[data-load="portfolio"]');
     if (!container) return;
@@ -39,7 +54,7 @@
     const title = currentLang === 'zh' ? (item.nameZh || item.name) : (item.nameEn || item.name);
     const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
     const categoryLabel = getCategoryLabel(item.category);
-    const img = item.coverImage || item.thumbnail || '';
+    const img = fixImagePath(item.coverImage || item.thumbnail || '');
 
     div.innerHTML = `
       <img src="${img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">
@@ -120,7 +135,7 @@
     const excerpt = currentLang === 'zh' ? (item.excerptZh || item.excerpt || '') : (item.excerptEn || item.excerpt || '');
 
     div.innerHTML = `
-      <img src="${item.coverImage || 'images/e90817a66889fb58586a43f902c9043e.jpg'}" alt="${title}" loading="lazy">
+      <img src="${fixImagePath(item.coverImage) || 'images/e90817a66889fb58586a43f902c9043e.jpg'}" alt="${title}" loading="lazy">
       <div class="insight-card-content">
         <div class="insight-meta">
           <span class="insight-date">${formatDate(item.publishedAt)}</span>
@@ -174,7 +189,7 @@
 
     div.innerHTML = `
       <div class="team-photo">
-        <img src="${item.photo || 'images/万摩星logo.png'}" alt="${name}" loading="lazy">
+        <img src="${fixImagePath(item.photo || item.avatar) || 'images/万摩星logo.png'}" alt="${name}" loading="lazy">
       </div>
       <h3 class="team-name">${name}</h3>
       <p class="team-position">${position}</p>
