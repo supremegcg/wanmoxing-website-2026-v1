@@ -156,9 +156,7 @@
 
     div.innerHTML = `
       <div class="service-card-number">${String(index + 1).padStart(2, '0')}</div>
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      </div>
+      <div class="service-icon">${item.icon || ''}</div>
       <div class="service-card-title">${title}</div>
       <div class="service-card-desc">${desc}</div>
     `;
