@@ -1,0 +1,200 @@
+/**
+ * 万摩星设计首页数据加载器
+ * 从 CMS 后台 API 获取数据，动态渲染首页精选内容
+ */
+
+(function () {
+  'use strict';
+
+  const API_BASE = 'https://wanmoxing-cms.vercel.app';
+  let currentLang = localStorage.getItem('lang') || 'zh';
+
+  /**
+   * 修正图片路径
+   */
+  function fixImagePath(url) {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    var parts = url.split('/');
+    var filename = parts[parts.length - 1];
+    return 'images/' + filename;
+  }
+
+  /**
+   * 加载首页精选案例（最多6个）
+   */
+  async function loadFeaturedPortfolio() {
+    const container = document.querySelector('[data-load="featured-portfolio"]');
+    if (!container) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/api/public/portfolio`);
+      if (!response.ok) throw new Error('Failed to fetch portfolio');
+      
+      const items = await response.json();
+      const featured = items.slice(0, 6); // 只取前6个
+      
+      container.innerHTML = '';
+      
+      featured.forEach((item, index) => {
+        const card = createFeaturedCard(item, index);
+        container.appendChild(card);
+      });
+
+      // 重新初始化筛选功能
+      initPortfolioFilter();
+      
+    } catch (error) {
+      console.error('加载精选案例失败:', error);
+    }
+  }
+
+  /**
+   * 创建首页案例卡片
+   */
+  function createFeaturedCard(item, index) {
+    const div = document.createElement('div');
+    div.className = `portfolio-card scale-in${index > 0 ? ' fade-in-delay-' + (index % 3) : ''}`;
+    div.dataset.category = item.category || 'power-tools';
+
+    const title = currentLang === 'zh' ? (item.nameZh || item.name) : (item.nameEn || item.name);
+    const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
+    const categoryLabel = getCategoryLabel(item.category);
+    const img = fixImagePath(item.coverImage || item.thumbnail || '');
+
+    div.innerHTML = `
+      <img src="${img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">
+      <div class="portfolio-card-overlay">
+        <span class="label">${categoryLabel}</span>
+        <div class="portfolio-card-title">${title}</div>
+        <div class="portfolio-card-desc">${desc}</div>
+      </div>
+    `;
+
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', function () {
+      window.location.href = 'portfolio.html';
+    });
+
+    return div;
+  }
+
+  /**
+   * 获取分类标签
+   */
+  function getCategoryLabel(category) {
+    const labels = {
+      'power-tools': currentLang === 'zh' ? '电动工具' : 'Power Tools',
+      'cleaning': currentLang === 'zh' ? '清洁家电' : 'Cleaning Appliances',
+      'smart-home': currentLang === 'zh' ? '智能设备' : 'Smart Devices',
+    };
+    return labels[category] || category || '';
+  }
+
+  /**
+   * 初始化作品集筛选功能（首页简化版）
+   */
+  function initPortfolioFilter() {
+    const filterBtns = document.querySelectorAll('.portfolio-filter button');
+    if (!filterBtns.length) return;
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const filter = this.dataset.filter;
+        
+        // 更新按钮状态
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // 筛选卡片
+        const cards = document.querySelectorAll('[data-load="featured-portfolio"] .portfolio-card');
+        cards.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+
+  /**
+   * 加载首页服务预览
+   */
+  async function loadServicesPreview() {
+    const container = document.querySelector('[data-load="services-preview"]');
+    if (!container) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/api/public/services`);
+      if (!response.ok) throw new Error('Failed to fetch services');
+      
+      const items = await response.json();
+      
+      container.innerHTML = '';
+      
+      items.forEach((item, index) => {
+        const card = createServicePreviewCard(item, index);
+        container.appendChild(card);
+      });
+      
+    } catch (error) {
+      console.error('加载服务预览失败:', error);
+    }
+  }
+
+  /**
+   * 创建服务预览卡片
+   */
+  function createServicePreviewCard(item, index) {
+    const div = document.createElement('div');
+    div.className = `service-card fade-in${index > 0 ? ' fade-in-delay-' + (index % 4) : ''}`;
+
+    const title = currentLang === 'zh' ? (item.titleZh || item.title) : (item.titleEn || item.title);
+    const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
+
+    div.innerHTML = `
+      <div class="service-card-number">${String(index + 1).padStart(2, '0')}</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="service-card-title">${title}</div>
+      <div class="service-card-desc">${desc}</div>
+    `;
+
+    return div;
+  }
+
+  /**
+   * 初始化
+   */
+  function init() {
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const newLang = this.dataset.lang;
+        if (newLang !== currentLang) {
+          currentLang = newLang;
+          localStorage.setItem('lang', newLang);
+          loadAll();
+        }
+      });
+    });
+  }
+
+  function loadAll() {
+    loadFeaturedPortfolio();
+    loadServicesPreview();
+  }
+
+  // 启动
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      init();
+      loadAll();
+    });
+  } else {
+    init();
+    loadAll();
+  }
+})();
