@@ -8,6 +8,7 @@
 
   const API_BASE = window.OMT_API_BASE || 'https://wanmoxing-cms.vercel.app';
   let currentLang = localStorage.getItem('omt-lang') || localStorage.getItem('lang') || 'zh';
+  let portfolioItems = [];
 
   /**
    * 修正图片路径
@@ -82,11 +83,32 @@
     return selected;
   }
 
-  function updateFilterAvailability(container) {
+  function pickCategoryFeatured(items, category, limit) {
+    const normalizedCategory = normalizeCategory(category);
+    const matches = items.filter(function (item) {
+      return normalizeCategory(item.category) === normalizedCategory;
+    });
+    const withImages = matches.filter(function (item) {
+      return item.coverImage || item.thumbnail;
+    });
+    return (withImages.length ? withImages : matches).slice(0, limit);
+  }
+
+  function renderFeaturedPortfolio(container, items) {
+    container.innerHTML = '';
+
+    items.forEach(function (item, index) {
+      const card = createFeaturedCard(item, index);
+      container.appendChild(card);
+    });
+    revealDynamicContent(container);
+  }
+
+  function updateFilterAvailability(items) {
     const filterBtns = document.querySelectorAll('.portfolio-filter button');
     filterBtns.forEach(function (btn) {
       const filter = btn.dataset.filter;
-      const hasItems = filter === 'all' || Boolean(container.querySelector(`.portfolio-card[data-category="${filter}"]`));
+      const hasItems = filter === 'all' || pickCategoryFeatured(items, filter, 1).length > 0;
       btn.disabled = !hasItems;
       btn.classList.toggle('is-disabled', !hasItems);
       if (!hasItems && btn.classList.contains('active')) {
@@ -108,17 +130,12 @@
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       
       const items = await response.json();
+      portfolioItems = items;
       const featured = pickBalancedFeatured(items, 6);
       if (!featured.length) return;
-      
-      container.innerHTML = '';
-      
-      featured.forEach((item, index) => {
-        const card = createFeaturedCard(item, index);
-        container.appendChild(card);
-      });
-      revealDynamicContent(container);
-      updateFilterAvailability(container);
+
+      renderFeaturedPortfolio(container, featured);
+      updateFilterAvailability(items);
 
       // 重新初始化筛选功能
       initPortfolioFilter();
@@ -186,15 +203,11 @@
         filterBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         
-        // 筛选卡片
-        const cards = document.querySelectorAll('[data-load="featured-portfolio"] .portfolio-card');
-        cards.forEach(card => {
-          if (filter === 'all' || card.dataset.category === filter) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        const container = document.querySelector('[data-load="featured-portfolio"]');
+        if (!container) return;
+
+        const items = filter === 'all' ? pickBalancedFeatured(portfolioItems, 6) : pickCategoryFeatured(portfolioItems, filter, 6);
+        renderFeaturedPortfolio(container, items);
       };
     });
   }
