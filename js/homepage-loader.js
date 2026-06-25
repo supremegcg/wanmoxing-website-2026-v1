@@ -51,6 +51,51 @@
     });
   }
 
+  function pickBalancedFeatured(items, limit) {
+    const source = items.filter(function (item) {
+      return item.coverImage || item.thumbnail;
+    });
+    const candidates = source.length ? source : items;
+    const categories = ['power-tools', 'cleaning', 'smart-home'];
+    const selected = [];
+    const used = new Set();
+
+    categories.forEach(function (category) {
+      const matches = candidates.filter(function (item) {
+        return normalizeCategory(item.category) === category;
+      });
+      matches.slice(0, 2).forEach(function (item) {
+        if (selected.length < limit && !used.has(item.id)) {
+          selected.push(item);
+          used.add(item.id);
+        }
+      });
+    });
+
+    candidates.forEach(function (item) {
+      if (selected.length < limit && !used.has(item.id)) {
+        selected.push(item);
+        used.add(item.id);
+      }
+    });
+
+    return selected;
+  }
+
+  function updateFilterAvailability(container) {
+    const filterBtns = document.querySelectorAll('.portfolio-filter button');
+    filterBtns.forEach(function (btn) {
+      const filter = btn.dataset.filter;
+      const hasItems = filter === 'all' || Boolean(container.querySelector(`.portfolio-card[data-category="${filter}"]`));
+      btn.disabled = !hasItems;
+      btn.classList.toggle('is-disabled', !hasItems);
+      if (!hasItems && btn.classList.contains('active')) {
+        const allBtn = document.querySelector('.portfolio-filter button[data-filter="all"]');
+        if (allBtn) allBtn.click();
+      }
+    });
+  }
+
   /**
    * 加载首页精选案例（最多6个）
    */
@@ -63,10 +108,7 @@
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       
       const items = await response.json();
-      const itemsWithImages = items.filter(function (item) {
-        return item.coverImage || item.thumbnail;
-      });
-      const featured = (itemsWithImages.length ? itemsWithImages : items).slice(0, 6);
+      const featured = pickBalancedFeatured(items, 6);
       if (!featured.length) return;
       
       container.innerHTML = '';
@@ -76,6 +118,7 @@
         container.appendChild(card);
       });
       revealDynamicContent(container);
+      updateFilterAvailability(container);
 
       // 重新初始化筛选功能
       initPortfolioFilter();
@@ -136,6 +179,7 @@
 
     filterBtns.forEach(btn => {
       btn.onclick = function () {
+        if (this.disabled) return;
         const filter = this.dataset.filter;
         
         // 更新按钮状态

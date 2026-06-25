@@ -513,6 +513,14 @@ p { color: #B0B0B0; line-height: 1.8; }
   color: #C8A862;
 }
 
+.portfolio-filter button:disabled,
+.portfolio-filter button.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  border-color: #2A2A2A;
+  color: #666;
+}
+
 /* ---- Services ---- */
 .services-grid {
   display: grid;
