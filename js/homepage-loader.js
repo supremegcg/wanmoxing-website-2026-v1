@@ -52,6 +52,36 @@
     });
   }
 
+  function applyStat(selector, value, suffix) {
+    var el = document.querySelector(selector);
+    var numericValue = Number(value);
+    if (!el || !Number.isFinite(numericValue)) return;
+
+    var cleanValue = Math.max(0, Math.floor(numericValue));
+    var cleanSuffix = suffix == null ? '' : String(suffix).slice(0, 4);
+    el.dataset.target = String(cleanValue);
+    el.dataset.suffix = cleanSuffix;
+
+    if (el.textContent && el.textContent !== '0') {
+      el.textContent = cleanValue + cleanSuffix;
+    }
+  }
+
+  async function loadSettings() {
+    try {
+      const response = await fetch(`${API_BASE}/api/public/settings`);
+      if (!response.ok) return;
+
+      const settings = await response.json();
+      applyStat('[data-stat-key="projects"]', settings.statProjectsValue, settings.statProjectsSuffix);
+      applyStat('[data-stat-key="years"]', settings.statYearsValue, settings.statYearsSuffix);
+      applyStat('[data-stat-key="brands"]', settings.statBrandsValue, settings.statBrandsSuffix);
+      applyStat('[data-stat-key="satisfaction"]', settings.statSatisfactionValue, settings.statSatisfactionSuffix);
+    } catch (error) {
+      console.error('加载首页数字失败:', error);
+    }
+  }
+
   function pickBalancedFeatured(items, limit) {
     const source = items.filter(function (item) {
       return item.coverImage || item.thumbnail;
@@ -277,6 +307,7 @@
   }
 
   function loadAll() {
+    loadSettings();
     loadFeaturedPortfolio();
     loadServicesPreview();
   }
