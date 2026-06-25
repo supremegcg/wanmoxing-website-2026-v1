@@ -6,8 +6,12 @@
 (function () {
   'use strict';
 
-  const API_BASE = 'https://wanmoxing-cms.vercel.app';
-  let currentLang = localStorage.getItem('lang') || 'zh';
+  const API_BASE = window.OMT_API_BASE || 'https://wanmoxing-cms.vercel.app';
+  function getCurrentLang() {
+    return localStorage.getItem('omt-lang') || localStorage.getItem('lang') || 'zh';
+  }
+
+  let currentLang = getCurrentLang();
 
   /**
    * 修正图片路径：将中文子目录路径映射到根目录
@@ -15,13 +19,40 @@
    */
   function fixImagePath(url) {
     if (!url) return '';
-    if (url.startsWith('http')) return url;
+
+    try {
+      var parsed = new URL(url, window.location.href);
+      var pathname = decodeURIComponent(parsed.pathname || '');
+      var filename = pathname.split('/').pop();
+      if (parsed.hostname === 'onemorething.com.cn' && pathname.indexOf('/images/') >= 0 && filename) {
+        return 'images/' + filename;
+      }
+    } catch (error) {
+      // Fall through to relative path handling.
+    }
+
     var parts = url.split('/');
     var filename = parts[parts.length - 1];
-    if (url.indexOf('images/') === 0 || url.indexOf('/images/') >= 0) {
-      return 'images/' + filename;
-    }
+    if (url.indexOf('images/') === 0 || url.indexOf('/images/') >= 0) return 'images/' + filename;
     return url;
+  }
+
+  function normalizeCategory(category) {
+    const map = {
+      'POWER_TOOL': 'power-tools',
+      'power-tool': 'power-tools',
+      'power_tools': 'power-tools',
+      'power-tools': 'power-tools',
+      'CLEANING_APPLIANCE': 'cleaning',
+      'cleaning-appliance': 'cleaning',
+      'cleaning_appliance': 'cleaning',
+      'cleaning': 'cleaning',
+      'SMART_DEVICE': 'smart-home',
+      'smart-device': 'smart-home',
+      'smart_device': 'smart-home',
+      'smart-home': 'smart-home',
+    };
+    return map[category] || category || '';
   }
 
   async function loadPortfolio() {
@@ -49,7 +80,7 @@
   function createPortfolioCard(item, index) {
     const div = document.createElement('div');
     div.className = `portfolio-card scale-in${index > 0 ? ' fade-in-delay-' + (index % 4) : ''}`;
-    div.dataset.category = item.category;
+    div.dataset.category = normalizeCategory(item.category);
 
     const title = currentLang === 'zh' ? (item.nameZh || item.name) : (item.nameEn || item.name);
     const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
@@ -57,7 +88,7 @@
     const img = fixImagePath(item.coverImage || item.thumbnail || '');
 
     div.innerHTML = `
-      <img src="${img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">
+      <img src="${img}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
       <div class="portfolio-card-overlay">
         <span class="label">${categoryLabel}</span>
         <div class="portfolio-card-title">${title}</div>
@@ -65,17 +96,20 @@
       </div>
     `;
 
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', function () {
+      window.location.href = 'portfolio-detail.html?id=' + encodeURIComponent(item.id);
+    });
+
     return div;
   }
 
   function getCategoryLabel(category) {
+    category = normalizeCategory(category);
     const labels = {
       'power-tools': currentLang === 'zh' ? '电动工具' : 'Power Tools',
-      'POWER_TOOL': currentLang === 'zh' ? '电动工具' : 'Power Tools',
       'cleaning': currentLang === 'zh' ? '清洁家电' : 'Cleaning Appliances',
-      'CLEANING_APPLIANCE': currentLang === 'zh' ? '清洁家电' : 'Cleaning Appliances',
       'smart-home': currentLang === 'zh' ? '智能设备' : 'Smart Devices',
-      'SMART_DEVICE': currentLang === 'zh' ? '智能设备' : 'Smart Devices',
     };
     return labels[category] || category;
   }
@@ -135,7 +169,7 @@
     const excerpt = currentLang === 'zh' ? (item.excerptZh || item.excerpt || '') : (item.excerptEn || item.excerpt || '');
 
     div.innerHTML = `
-      <img src="${fixImagePath(item.coverImage) || 'images/e90817a66889fb58586a43f902c9043e.jpg'}" alt="${title}" loading="lazy">
+      <img src="${fixImagePath(item.coverImage) || 'images/万摩星logo.png'}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
       <div class="insight-card-content">
         <div class="insight-meta">
           <span class="insight-date">${formatDate(item.publishedAt)}</span>
@@ -189,7 +223,7 @@
 
     div.innerHTML = `
       <div class="team-photo">
-        <img src="${fixImagePath(item.photo || item.avatar) || 'images/万摩星logo.png'}" alt="${name}" loading="lazy">
+        <img src="${fixImagePath(item.avatar) || 'images/万摩星logo.png'}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
       </div>
       <h3 class="team-name">${name}</h3>
       <p class="team-position">${position}</p>
@@ -241,9 +275,9 @@
     const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
 
     div.innerHTML = `
-      <div class="service-icon">${item.icon || ''}</div>
-      <h3 class="service-title">${title}</h3>
-      <p class="service-desc">${desc}</p>
+      <div class="service-card-number">${item.icon || ''}</div>
+      <div class="service-card-title">${title}</div>
+      <div class="service-card-desc">${desc}</div>
     `;
 
     return div;
@@ -255,6 +289,7 @@
         const newLang = this.dataset.lang;
         if (newLang !== currentLang) {
           currentLang = newLang;
+          localStorage.setItem('omt-lang', newLang);
           localStorage.setItem('lang', newLang);
           loadAll();
         }

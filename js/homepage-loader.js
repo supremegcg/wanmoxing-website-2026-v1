@@ -6,18 +6,42 @@
 (function () {
   'use strict';
 
-  const API_BASE = 'https://wanmoxing-cms.vercel.app';
-  let currentLang = localStorage.getItem('lang') || 'zh';
+  const API_BASE = window.OMT_API_BASE || 'https://wanmoxing-cms.vercel.app';
+  let currentLang = localStorage.getItem('omt-lang') || localStorage.getItem('lang') || 'zh';
 
   /**
    * 修正图片路径
    */
   function fixImagePath(url) {
     if (!url) return '';
-    if (url.startsWith('http')) return url;
-    var parts = url.split('/');
-    var filename = parts[parts.length - 1];
-    return 'images/' + filename;
+    try {
+      const parsed = new URL(url, window.location.href);
+      const filename = decodeURIComponent(parsed.pathname.split('/').pop() || '');
+      if (parsed.hostname.includes('onemorething.com.cn') && parsed.pathname.includes('/images/') && filename) {
+        return 'images/' + filename;
+      }
+      if (url.startsWith('http')) return url;
+    } catch (error) {
+      // Fall back to filename extraction below.
+    }
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    return filename ? 'images/' + filename : '';
+  }
+
+  function normalizeCategory(category) {
+    const map = {
+      POWER_TOOL: 'power-tools',
+      POWER_TOOLS: 'power-tools',
+      power_tool: 'power-tools',
+      CLEANING_APPLIANCE: 'cleaning',
+      CLEANING: 'cleaning',
+      cleaning_appliance: 'cleaning',
+      SMART_DEVICE: 'smart-home',
+      SMART_HOME: 'smart-home',
+      smart_device: 'smart-home',
+    };
+    return map[category] || category || 'power-tools';
   }
 
   /**
@@ -33,6 +57,7 @@
       
       const items = await response.json();
       const featured = items.slice(0, 6); // 只取前6个
+      if (!featured.length) return;
       
       container.innerHTML = '';
       
@@ -55,15 +80,15 @@
   function createFeaturedCard(item, index) {
     const div = document.createElement('div');
     div.className = `portfolio-card scale-in${index > 0 ? ' fade-in-delay-' + (index % 3) : ''}`;
-    div.dataset.category = item.category || 'power-tools';
+    div.dataset.category = normalizeCategory(item.category);
 
     const title = currentLang === 'zh' ? (item.nameZh || item.name) : (item.nameEn || item.name);
     const desc = currentLang === 'zh' ? (item.descriptionZh || item.description || '') : (item.descriptionEn || item.description || '');
-    const categoryLabel = getCategoryLabel(item.category);
+    const categoryLabel = getCategoryLabel(div.dataset.category);
     const img = fixImagePath(item.coverImage || item.thumbnail || '');
 
     div.innerHTML = `
-      <img src="${img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">
+      <img src="${img || 'images/万摩星logo.png'}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
       <div class="portfolio-card-overlay">
         <span class="label">${categoryLabel}</span>
         <div class="portfolio-card-title">${title}</div>
@@ -73,7 +98,7 @@
 
     div.style.cursor = 'pointer';
     div.addEventListener('click', function () {
-      window.location.href = 'portfolio.html';
+      window.location.href = item.id ? `portfolio-detail.html?id=${encodeURIComponent(item.id)}` : 'portfolio.html';
     });
 
     return div;
@@ -131,6 +156,7 @@
       if (!response.ok) throw new Error('Failed to fetch services');
       
       const items = await response.json();
+      if (!items.length) return;
       
       container.innerHTML = '';
       
@@ -173,6 +199,7 @@
         const newLang = this.dataset.lang;
         if (newLang !== currentLang) {
           currentLang = newLang;
+          localStorage.setItem('omt-lang', newLang);
           localStorage.setItem('lang', newLang);
           loadAll();
         }

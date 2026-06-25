@@ -475,6 +475,7 @@
   function setLang(lang) {
     currentLang = lang;
     localStorage.setItem('omt-lang', lang);
+    localStorage.setItem('lang', lang);
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
 
     // data-i18n: textContent
