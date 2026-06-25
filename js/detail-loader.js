@@ -54,6 +54,7 @@
   function formatDate(dateStr) {
     if (!dateStr) return '';
     const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', {
       year: 'numeric',
       month: 'long',

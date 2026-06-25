@@ -55,6 +55,13 @@
     return map[category] || category || '';
   }
 
+  function revealDynamicContent(container) {
+    const animated = container.querySelectorAll('.fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3, .fade-in-delay-4, .slide-left, .scale-in');
+    animated.forEach(function (el) {
+      el.classList.add('visible');
+    });
+  }
+
   async function loadPortfolio() {
     const container = document.querySelector('[data-load="portfolio"]');
     if (!container) return;
@@ -70,6 +77,7 @@
         const card = createPortfolioCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
 
       initPortfolioFilter();
     } catch (error) {
@@ -119,7 +127,7 @@
     const cards = document.querySelectorAll('.portfolio-card[data-category]');
 
     filterBtns.forEach(btn => {
-      btn.addEventListener('click', function () {
+      btn.onclick = function () {
         filterBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
 
@@ -137,7 +145,7 @@
             setTimeout(() => card.style.display = 'none', 300);
           }
         });
-      });
+      };
     });
   }
 
@@ -156,6 +164,7 @@
         const card = createInsightCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
     } catch (error) {
       console.error('加载洞察文章失败:', error);
     }
@@ -186,6 +195,7 @@
   function formatDate(dateStr) {
     if (!dateStr) return '';
     const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleDateString(currentLang === 'zh' ? 'zh-CN' : 'en-US', {
       year: 'numeric',
       month: 'long',
@@ -208,6 +218,7 @@
         const card = createTeamCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
     } catch (error) {
       console.error('加载团队信息失败:', error);
     }
@@ -262,6 +273,7 @@
         const card = createServiceCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
     } catch (error) {
       console.error('加载服务列表失败:', error);
     }

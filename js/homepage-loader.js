@@ -44,6 +44,13 @@
     return map[category] || category || 'power-tools';
   }
 
+  function revealDynamicContent(container) {
+    const animated = container.querySelectorAll('.fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3, .fade-in-delay-4, .slide-left, .scale-in');
+    animated.forEach(function (el) {
+      el.classList.add('visible');
+    });
+  }
+
   /**
    * 加载首页精选案例（最多6个）
    */
@@ -56,7 +63,10 @@
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       
       const items = await response.json();
-      const featured = items.slice(0, 6); // 只取前6个
+      const itemsWithImages = items.filter(function (item) {
+        return item.coverImage || item.thumbnail;
+      });
+      const featured = (itemsWithImages.length ? itemsWithImages : items).slice(0, 6);
       if (!featured.length) return;
       
       container.innerHTML = '';
@@ -65,6 +75,7 @@
         const card = createFeaturedCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
 
       // 重新初始化筛选功能
       initPortfolioFilter();
@@ -124,7 +135,7 @@
     if (!filterBtns.length) return;
 
     filterBtns.forEach(btn => {
-      btn.addEventListener('click', function () {
+      btn.onclick = function () {
         const filter = this.dataset.filter;
         
         // 更新按钮状态
@@ -140,7 +151,7 @@
             card.style.display = 'none';
           }
         });
-      });
+      };
     });
   }
 
@@ -164,6 +175,7 @@
         const card = createServicePreviewCard(item, index);
         container.appendChild(card);
       });
+      revealDynamicContent(container);
       
     } catch (error) {
       console.error('加载服务预览失败:', error);
