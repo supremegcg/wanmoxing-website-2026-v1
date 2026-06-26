@@ -12,6 +12,7 @@
   }
 
   let currentLang = getCurrentLang();
+  const FEATURED_INSIGHT_TITLE_ZH = '电动工具设计的人机工程学：如何让专业工具更易用';
 
   /**
    * 修正图片路径：将中文子目录路径映射到根目录
@@ -56,10 +57,22 @@
   }
 
   function revealDynamicContent(container) {
+    if (container.matches && container.matches('.fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3, .fade-in-delay-4, .slide-left, .scale-in')) {
+      container.classList.add('visible');
+    }
     const animated = container.querySelectorAll('.fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3, .fade-in-delay-4, .slide-left, .scale-in');
     animated.forEach(function (el) {
       el.classList.add('visible');
     });
+  }
+
+  function escapeHTML(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   async function loadPortfolio() {
@@ -168,6 +181,57 @@
     } catch (error) {
       console.error('加载洞察文章失败:', error);
     }
+  }
+
+  async function loadFeaturedInsight() {
+    const container = document.querySelector('[data-load="featured-insight"]');
+    if (!container) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/api/public/insights`);
+      if (!response.ok) throw new Error('Failed to fetch featured insight');
+      const items = await response.json();
+      if (!Array.isArray(items) || !items.length) return;
+
+      const item = pickFeaturedInsight(items);
+      if (!item) return;
+
+      renderFeaturedInsight(container, item);
+    } catch (error) {
+      console.error('加载精选洞察失败:', error);
+    }
+  }
+
+  function pickFeaturedInsight(items) {
+    return items.find(function (item) {
+      return item.titleZh === FEATURED_INSIGHT_TITLE_ZH || item.title === FEATURED_INSIGHT_TITLE_ZH;
+    }) || items.find(function (item) {
+      return Number(item.sortOrder) === 1;
+    }) || items[0];
+  }
+
+  function renderFeaturedInsight(container, item) {
+    const title = escapeHTML(currentLang === 'zh' ? (item.titleZh || item.title) : (item.titleEn || item.title));
+    const excerpt = escapeHTML(currentLang === 'zh' ? (item.excerptZh || item.excerpt || '') : (item.excerptEn || item.excerpt || ''));
+    const tags = Array.isArray(item.tags) ? item.tags.slice(0, 3) : [];
+    const cover = fixImagePath(item.coverImage) || 'images/15.png';
+
+    container.setAttribute('href', 'insight-detail.html?id=' + encodeURIComponent(item.id));
+    container.innerHTML = `
+      <div class="insights-featured-img">
+        <img src="${cover}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/15.png';this.classList.add('image-fallback')">
+      </div>
+      <div class="insights-featured-content">
+        <span class="label">${currentLang === 'zh' ? '深度长文' : 'Feature'}</span>
+        <h2>${title}</h2>
+        <p>${excerpt}</p>
+        <div class="insight-date-row">${formatDate(item.publishedAt)}</div>
+        ${tags.length ? '<div class="insights-tags">' + tags.map(function (tag) {
+          return '<span class="ins-tag">' + escapeHTML(tag) + '</span>';
+        }).join('') + '</div>' : ''}
+      </div>
+    `;
+    revealDynamicContent(container.parentElement || container);
   }
 
   function createInsightCard(item, index) {
@@ -313,6 +377,7 @@
   function loadAll() {
     loadSettings();
     loadPortfolio();
+    loadFeaturedInsight();
     loadInsights();
     loadTeam();
     loadServices();
