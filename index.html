@@ -36,7 +36,7 @@
       <a href="services.html" data-i18n="nav-services">服务</a>
       <a href="portfolio.html" data-i18n="nav-portfolio">项目案例</a>
       <a href="insights.html" data-i18n="nav-insights">洞察</a>
-      <a href="contact.html" data-i18n="nav-contact">联系</a>
+      <div class="nav-dropdown"><a href="contact.html" class="nav-dropdown-toggle" data-i18n="nav-contact">联系我们</a><div class="nav-dropdown-menu"><a href="contact.html" data-i18n="nav-contact-us">联系我们</a><a href="contact.html#join-us" data-i18n="nav-join-us">加入我们</a><a href="contact.html#faq" data-i18n="nav-faq">常见问题</a></div></div>
     </div>
     <div class="lang-switch">
       <button class="lang-btn active" data-lang="zh">中</button>
@@ -56,7 +56,7 @@
     <a href="services.html" data-i18n="mnav-services">服务</a>
     <a href="portfolio.html" data-i18n="mnav-portfolio">项目案例</a>
     <a href="insights.html" data-i18n="mnav-insights">洞察</a>
-    <a href="contact.html" data-i18n="mnav-contact">联系</a>
+    <a href="contact.html" data-i18n="mnav-contact">联系我们</a><a href="contact.html#join-us" data-i18n="mnav-join-us">加入我们</a><a href="contact.html#faq" data-i18n="mnav-faq">常见问题</a>
   </div>
 
   <!-- Hero -->
@@ -335,16 +335,18 @@
     <div class="container">
       <div class="section-header-center fade-in" style="margin-bottom:3rem;">
         <span class="section-label" style="color:#444;" data-i18n="partner-label">Trusted By</span>
+        <h2 data-i18n="partner-title">服务客户</h2>
+        <p data-i18n="partner-desc">与面向全球市场的电动工具、清洁家电与智能硬件品牌共同打磨产品价值</p>
       </div>
-      <div class="partners-grid fade-in">
-        <div class="partner-item">ROCKSTAR</div>
-        <div class="partner-item">Hoover</div>
-        <div class="partner-item">KARCHER</div>
-        <div class="partner-item">DREAME</div>
-        <div class="partner-item">Electrolux</div>
-        <div class="partner-item">FLYCO</div>
-        <div class="partner-item">FILPOW</div>
-        <div class="partner-item">MOVA</div>
+      <div class="partners-grid fade-in" data-load="client-logos">
+        <div class="partner-item"><img src="images/clients/rockstar.svg" alt="ROCKSTAR" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/hoover.svg" alt="Hoover" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/karcher.svg" alt="KARCHER" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/dreame.svg" alt="DREAME" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/electrolux.svg" alt="Electrolux" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/flyco.svg" alt="FLYCO" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/filpow.svg" alt="FILPOW" loading="lazy"></div>
+        <div class="partner-item"><img src="images/clients/mova.svg" alt="MOVA" loading="lazy"></div>
       </div>
     </div>
   </section>

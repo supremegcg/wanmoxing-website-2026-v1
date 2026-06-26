@@ -15,9 +15,14 @@
    */
   function fixImagePath(url) {
     if (!url) return '';
+    if (url.startsWith('images/clients/')) return url;
+    if (url.startsWith('/images/clients/')) return url.slice(1);
     try {
       const parsed = new URL(url, window.location.href);
       const filename = decodeURIComponent(parsed.pathname.split('/').pop() || '');
+      if (parsed.pathname.includes('/images/clients/')) {
+        return 'images/clients/' + filename;
+      }
       if (parsed.hostname.includes('onemorething.com.cn') && parsed.pathname.includes('/images/') && filename) {
         return 'images/' + filename;
       }
@@ -79,6 +84,48 @@
       applyStat('[data-stat-key="satisfaction"]', settings.statSatisfactionValue, settings.statSatisfactionSuffix);
     } catch (error) {
       console.error('加载首页数字失败:', error);
+    }
+  }
+
+  function createClientLogoItem(item) {
+    const wrapper = document.createElement(item.websiteUrl ? 'a' : 'div');
+    wrapper.className = 'partner-item';
+    if (item.websiteUrl) {
+      wrapper.href = item.websiteUrl;
+      wrapper.target = '_blank';
+      wrapper.rel = 'noopener noreferrer';
+    }
+
+    const img = document.createElement('img');
+    img.src = fixImagePath(item.logoUrl);
+    img.alt = item.name || 'Client logo';
+    img.loading = 'lazy';
+    img.onerror = function () {
+      wrapper.textContent = item.name || 'CLIENT';
+      wrapper.classList.add('partner-item-text');
+    };
+    wrapper.appendChild(img);
+    return wrapper;
+  }
+
+  async function loadClientLogos() {
+    const container = document.querySelector('[data-load="client-logos"]');
+    if (!container) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/api/public/client-logos`);
+      if (!response.ok) return;
+
+      const items = await response.json();
+      if (!Array.isArray(items) || !items.length) return;
+
+      container.innerHTML = '';
+      items.forEach(function (item) {
+        if (item.logoUrl) container.appendChild(createClientLogoItem(item));
+      });
+      revealDynamicContent(container);
+    } catch (error) {
+      console.error('加载客户 Logo 失败:', error);
     }
   }
 
@@ -310,6 +357,7 @@
     loadSettings();
     loadFeaturedPortfolio();
     loadServicesPreview();
+    loadClientLogos();
   }
 
   // 启动

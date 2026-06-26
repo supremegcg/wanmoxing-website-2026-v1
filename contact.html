@@ -26,7 +26,7 @@
       <a href="services.html" data-i18n="nav-services">服务</a>
       <a href="portfolio.html" data-i18n="nav-portfolio">项目案例</a>
       <a href="insights.html" data-i18n="nav-insights">洞察</a>
-      <a href="contact.html" class="active" data-i18n="nav-contact">联系</a>
+      <div class="nav-dropdown active"><a href="contact.html" class="nav-dropdown-toggle active" data-i18n="nav-contact">联系我们</a><div class="nav-dropdown-menu"><a href="contact.html" data-i18n="nav-contact-us">联系我们</a><a href="contact.html#join-us" data-i18n="nav-join-us">加入我们</a><a href="contact.html#faq" data-i18n="nav-faq">常见问题</a></div></div>
     </div>
     <div class="lang-switch">
       <button class="lang-btn active" data-lang="zh">中</button>
@@ -37,7 +37,7 @@
     <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </nav>
   <div class="nav-mobile-overlay">
-    <a href="index.html" data-i18n="mnav-home">首页</a><a href="about.html" data-i18n="mnav-about">关于我们</a><a href="services.html" data-i18n="mnav-services">服务</a><a href="portfolio.html" data-i18n="mnav-portfolio">项目案例</a><a href="insights.html" data-i18n="mnav-insights">洞察</a><a href="contact.html" data-i18n="mnav-contact">联系</a>
+    <a href="index.html" data-i18n="mnav-home">首页</a><a href="about.html" data-i18n="mnav-about">关于我们</a><a href="services.html" data-i18n="mnav-services">服务</a><a href="portfolio.html" data-i18n="mnav-portfolio">项目案例</a><a href="insights.html" data-i18n="mnav-insights">洞察</a><a href="contact.html" data-i18n="mnav-contact">联系我们</a><a href="contact.html#join-us" data-i18n="mnav-join-us">加入我们</a><a href="contact.html#faq" data-i18n="mnav-faq">常见问题</a>
   </div>
 
   <!-- Page Header -->
@@ -205,8 +205,34 @@
     </div>
   </section>
 
+  <!-- Join Us -->
+  <section class="section" id="join-us" style="padding-top:0;">
+    <div class="container">
+      <div class="join-panel fade-in">
+        <div class="grid-2" style="align-items:center;gap:3rem;">
+          <div>
+            <span class="section-label" data-i18n="join-label">Join Us</span>
+            <h2 data-i18n="join-title">加入我们</h2>
+            <p style="margin-top:1rem;" data-i18n="join-desc">我们长期欢迎工业设计、CMF、结构工程、品牌策略与项目管理方向的优秀伙伴加入，也欢迎自由设计师与制造资源建立项目制合作。</p>
+          </div>
+          <div>
+            <ul class="join-list">
+              <li data-i18n="join-item-1">工业设计师 / 产品设计师</li>
+              <li data-i18n="join-item-2">CMF 设计师 / 趋势研究伙伴</li>
+              <li data-i18n="join-item-3">结构工程与手板制作合作伙伴</li>
+              <li data-i18n="join-item-4">品牌、内容与海外市场协作伙伴</li>
+            </ul>
+            <div style="margin-top:2rem;">
+              <a href="mailto:onemorethingdesign@163.com" class="btn-outline" data-i18n="join-btn">发送简历 / 合作意向</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
-  <section class="section" style="padding-top:0;">
+  <section class="section" id="faq" style="padding-top:0;">
     <div class="container">
       <div class="divider-full divider" style="margin-bottom:4rem;"></div>
       <div class="section-header fade-in">

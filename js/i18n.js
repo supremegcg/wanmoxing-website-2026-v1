@@ -12,7 +12,10 @@
     'nav-services': { zh: '服务', en: 'Services' },
     'nav-portfolio':{ zh: '项目案例', en: 'Case Studies' },
     'nav-insights': { zh: '洞察', en: 'Insights' },
-    'nav-contact':  { zh: '联系', en: 'Contact' },
+    'nav-contact':  { zh: '联系我们', en: 'Contact Us' },
+    'nav-contact-us': { zh: '联系我们', en: 'Contact Us' },
+    'nav-join-us':  { zh: '加入我们', en: 'Join Us' },
+    'nav-faq':      { zh: '常见问题', en: 'FAQ' },
     'nav-cta':      { zh: '立即咨询', en: 'Get in Touch' },
 
     // ====== Mobile Nav ======
@@ -21,7 +24,9 @@
     'mnav-services': { zh: '服务', en: 'Services' },
     'mnav-portfolio':{ zh: '项目案例', en: 'Case Studies' },
     'mnav-insights': { zh: '洞察', en: 'Insights' },
-    'mnav-contact':  { zh: '联系', en: 'Contact' },
+    'mnav-contact':  { zh: '联系我们', en: 'Contact Us' },
+    'mnav-join-us':  { zh: '加入我们', en: 'Join Us' },
+    'mnav-faq':      { zh: '常见问题', en: 'FAQ' },
 
     // ====== Footer ======
     'foot-brand':    { zh: '万摩星设计', en: 'OMT Design' },
@@ -129,6 +134,8 @@
 
     // Partners (index)
     'partner-label': { zh: 'Trusted By', en: 'Trusted By' },
+    'partner-title': { zh: '服务客户', en: 'Clients Served' },
+    'partner-desc': { zh: '与面向全球市场的电动工具、清洁家电与智能硬件品牌共同打磨产品价值', en: 'Shaping product value with power tool, cleaning appliance, and smart hardware brands for global markets' },
 
     // CTA (index)
     'cta-label':     { zh: 'Start a Project', en: 'Start a Project' },
@@ -191,6 +198,20 @@
     'team-5-bio':    { zh: '永康基地负责人，15年+手板制作经验，精通CNC加工、3D打印、复模等工艺。', en: 'Yongkang base lead, 15+ years in prototyping, expert in CNC, 3D printing, and silicone molding.' },
     'team-6-role':   { zh: 'CMF设计师', en: 'CMF Designer' },
     'team-6-bio':    { zh: '材料与工艺专家，专注色彩趋势研究、表面处理工艺与包材设计。', en: 'Materials and process expert, focused on color trends, surface finishing, and packaging design.' },
+
+    // Awards
+    'awards-label': { zh: 'Awards', en: 'Awards' },
+    'awards-title': { zh: '获得奖项', en: 'Awards & Recognition' },
+    'awards-desc': { zh: '团队作品曾获得国际与国内重要设计奖项认可。当前先建立奖项展示体系，后续将扩展为完整获奖案例库。', en: 'Our team work has been recognized by major international and domestic design awards. This section establishes the award system first and will later expand into dedicated award-winning case studies.' },
+    'award-red-dot-title': { zh: 'Red Dot 红点设计奖', en: 'Red Dot Design Award' },
+    'award-red-dot-desc': { zh: '国际工业设计领域代表性奖项，强调创新性、功能性与设计品质。', en: 'A leading international industrial design award emphasizing innovation, function, and design quality.' },
+    'award-if-title': { zh: 'iF Design Award', en: 'iF Design Award' },
+    'award-if-desc': { zh: '覆盖产品、用户体验与品牌设计的国际设计奖项，体现面向全球市场的设计能力。', en: 'An international design award covering product, user experience, and brand design for global-market work.' },
+    'award-red-star-title': { zh: '中国设计红星奖', en: 'China Red Star Design Award' },
+    'award-red-star-desc': { zh: '国内具有代表性的工业设计奖项，关注中国制造语境下的产品创新。', en: 'A representative Chinese industrial design award focused on product innovation in the context of Chinese manufacturing.' },
+    'award-cmf-title': { zh: '行业与客户认可', en: 'Industry & Client Recognition' },
+    'award-cmf-desc': { zh: '围绕电动工具、清洁家电与智能设备，在 CMF、量产落地和品牌体验上持续积累。', en: 'Ongoing recognition in CMF, production delivery, and brand experience across power tools, cleaning appliances, and smart devices.' },
+    'award-status': { zh: '获奖作品', en: 'Awarded Works' },
 
     // Timeline
     'tl-label':      { zh: 'Our Journey', en: 'Our Journey' },
@@ -367,6 +388,16 @@
     'ct-f-note':      { zh: '我们会在1-2个工作日内通过邮件或电话与您取得联系。', en: 'We will contact you via email or phone within 1-2 business days.' },
     'ct-f-ok-label':  { zh: '✓ 提交成功', en: '✓ Submitted' },
     'ct-f-ok-desc':   { zh: '感谢您的咨询！我们的团队会在1-2个工作日内与您联系。', en: 'Thank you for your inquiry! Our team will contact you within 1-2 business days.' },
+
+    // Join us
+    'join-label':     { zh: 'Join Us', en: 'Join Us' },
+    'join-title':     { zh: '加入我们', en: 'Join Us' },
+    'join-desc':      { zh: '我们长期欢迎工业设计、CMF、结构工程、品牌策略与项目管理方向的优秀伙伴加入，也欢迎自由设计师与制造资源建立项目制合作。', en: 'We welcome talented partners in industrial design, CMF, structural engineering, brand strategy, and project management, as well as freelance designers and manufacturing resources for project-based collaboration.' },
+    'join-item-1':    { zh: '工业设计师 / 产品设计师', en: 'Industrial Designer / Product Designer' },
+    'join-item-2':    { zh: 'CMF 设计师 / 趋势研究伙伴', en: 'CMF Designer / Trend Research Partner' },
+    'join-item-3':    { zh: '结构工程与手板制作合作伙伴', en: 'Structural Engineering & Prototyping Partner' },
+    'join-item-4':    { zh: '品牌、内容与海外市场协作伙伴', en: 'Brand, Content & Overseas Market Partner' },
+    'join-btn':       { zh: '发送简历 / 合作意向', en: 'Send Resume / Collaboration Proposal' },
 
     // FAQ
     'faq-label':      { zh: 'FAQ', en: 'FAQ' },
