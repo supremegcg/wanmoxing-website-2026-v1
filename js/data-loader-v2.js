@@ -237,9 +237,12 @@
   function createInsightCard(item, index) {
     const div = document.createElement('article');
     div.className = `insight-card fade-in${index > 0 ? ' fade-in-delay-' + (index % 4) : ''}`;
+    div.tabIndex = 0;
+    div.setAttribute('role', 'link');
 
     const title = currentLang === 'zh' ? (item.titleZh || item.title) : (item.titleEn || item.title);
     const excerpt = currentLang === 'zh' ? (item.excerptZh || item.excerpt || '') : (item.excerptEn || item.excerpt || '');
+    const detailUrl = 'insight-detail.html?id=' + encodeURIComponent(item.id);
 
     div.innerHTML = `
       <img src="${fixImagePath(item.coverImage) || 'images/万摩星logo.png'}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
@@ -249,9 +252,21 @@
         </div>
         <h3 class="insight-title">${title}</h3>
         <p class="insight-excerpt">${excerpt}</p>
-        <a href="insight-detail.html?id=${item.id}" class="insight-link" data-i18n="read-more">阅读全文 →</a>
+        <a href="${detailUrl}" class="insight-link" data-i18n="read-more">阅读全文 →</a>
       </div>
     `;
+
+    div.addEventListener('click', function (event) {
+      if (event.target.closest('a')) return;
+      window.location.href = detailUrl;
+    });
+
+    div.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        window.location.href = detailUrl;
+      }
+    });
 
     return div;
   }
