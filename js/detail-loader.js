@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
 
   const API_BASE = window.OMT_API_BASE || '';
@@ -63,6 +63,19 @@
     });
   }
 
+
+  async function redirectLegacyInsightDetail(id) {
+    try {
+      const response = await fetch('data/insights-static.json');
+      if (!response.ok) return false;
+      const items = await response.json();
+      if (!Array.isArray(items) || !items.some(function (item) { return item.id === id; })) return false;
+      window.location.replace('insights/' + encodeURIComponent(id) + '.html');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
   async function loadPortfolioDetail() {
     const container = document.querySelector('[data-load="portfolio-detail"]');
     if (!container) return;
@@ -130,6 +143,8 @@
       return;
     }
 
+    if (await redirectLegacyInsightDetail(id)) return;
+
     try {
       const response = await fetch(`${API_BASE}/api/public/insights/${id}`);
       if (!response.ok) throw new Error('Failed to fetch insight detail');
@@ -189,3 +204,5 @@
     init();
   }
 })();
+
+

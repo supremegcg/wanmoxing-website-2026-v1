@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 万摩星设计前台数据加载器
  * 从 CMS 后台 API 获取数据，动态渲染到页面
  */
@@ -7,6 +7,7 @@
   'use strict';
 
   const API_BASE = window.OMT_API_BASE || '';
+  const STATIC_INSIGHTS_URL = 'data/insights-static.json';
   function getCurrentLang() {
     return localStorage.getItem('omt-lang') || localStorage.getItem('lang') || 'zh';
   }
@@ -76,6 +77,45 @@
       .replace(/'/g, '&#39;');
   }
 
+  async function fetchJson(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to fetch ' + url);
+    return response.json();
+  }
+
+  async function loadInsightItems() {
+    try {
+      const items = await fetchJson(STATIC_INSIGHTS_URL);
+      if (Array.isArray(items) && items.length) return items;
+    } catch (error) {
+      console.warn('静态洞察数据不可用，回退到后台接口:', error);
+    }
+    return fetchJson(`${API_BASE}/api/public/insights`);
+  }
+
+  function getInsightDetailUrl(item) {
+    if (!item || !item.id) return 'insights.html';
+    return 'insights/' + encodeURIComponent(item.id) + '.html';
+  }
+
+  function initStaticInsightCards() {
+    document.querySelectorAll('[data-static-insight-card]').forEach(function (card) {
+      if (card.dataset.staticInsightBound === 'true') return;
+      card.dataset.staticInsightBound = 'true';
+      card.addEventListener('click', function (event) {
+        if (event.target.closest('a')) return;
+        const href = card.getAttribute('data-href');
+        if (href) window.location.href = href;
+      });
+      card.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          const href = card.getAttribute('data-href');
+          if (href) window.location.href = href;
+        }
+      });
+    });
+  }
   async function loadPortfolio() {
     const container = document.querySelector('[data-load="portfolio"]');
     if (!container) return;
@@ -168,9 +208,7 @@
     if (!container) return;
 
     try {
-      const response = await fetch(`${API_BASE}/api/public/insights`);
-      if (!response.ok) throw new Error('Failed to fetch insights');
-      const items = await response.json();
+      const items = await loadInsightItems();
 
       container.innerHTML = '';
 
@@ -179,19 +217,17 @@
         container.appendChild(card);
       });
       revealDynamicContent(container);
+      initStaticInsightCards();
     } catch (error) {
       console.error('加载洞察文章失败:', error);
     }
   }
-
   async function loadFeaturedInsight() {
     const container = document.querySelector('[data-load="featured-insight"]');
     if (!container) return;
 
     try {
-      const response = await fetch(`${API_BASE}/api/public/insights`);
-      if (!response.ok) throw new Error('Failed to fetch featured insight');
-      const items = await response.json();
+      const items = await loadInsightItems();
       if (!Array.isArray(items) || !items.length) return;
 
       const item = pickFeaturedInsight(items);
@@ -217,7 +253,7 @@
     const tags = Array.isArray(item.tags) ? item.tags.slice(0, 3) : [];
     const cover = fixImagePath(item.coverImage) || 'images/15.png';
 
-    container.setAttribute('href', 'insight-detail.html?id=' + encodeURIComponent(item.id));
+    container.setAttribute('href', getInsightDetailUrl(item));
     container.innerHTML = `
       <div class="insights-featured-img">
         <img src="${cover}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/15.png';this.classList.add('image-fallback')">
@@ -240,10 +276,12 @@
     div.className = `insight-card fade-in${index > 0 ? ' fade-in-delay-' + (index % 4) : ''}`;
     div.tabIndex = 0;
     div.setAttribute('role', 'link');
+    div.setAttribute('data-static-insight-card', '');
+    div.setAttribute('data-href', getInsightDetailUrl(item));
 
     const title = currentLang === 'zh' ? (item.titleZh || item.title) : (item.titleEn || item.title);
     const excerpt = currentLang === 'zh' ? (item.excerptZh || item.excerpt || '') : (item.excerptEn || item.excerpt || '');
-    const detailUrl = 'insight-detail.html?id=' + encodeURIComponent(item.id);
+    const detailUrl = getInsightDetailUrl(item);
 
     div.innerHTML = `
       <img src="${fixImagePath(item.coverImage) || 'images/万摩星logo.png'}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='images/万摩星logo.png';this.classList.add('image-fallback')">
@@ -383,10 +421,12 @@
           currentLang = newLang;
           localStorage.setItem('omt-lang', newLang);
           localStorage.setItem('lang', newLang);
+          initStaticInsightCards();
           loadAll();
         }
       });
     });
+    initStaticInsightCards();
     loadAll();
   }
 
@@ -406,3 +446,8 @@
   }
 
 })();
+
+
+
+
+
