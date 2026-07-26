@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  const API_BASE = window.OMT_API_BASE || 'https://wanmoxing-cms.vercel.app';
+  const API_BASE = window.OMT_API_BASE || '';
   function getCurrentLang() {
     return localStorage.getItem('omt-lang') || localStorage.getItem('lang') || 'zh';
   }
@@ -24,7 +24,8 @@
     try {
       var parsed = new URL(url, window.location.href);
       var pathname = decodeURIComponent(parsed.pathname || '');
-      var filename = pathname.split('/').pop();
+      if (parsed.hostname.indexOf('blob.vercel-storage.com') >= 0) return '/api/blob/' + pathname.replace(/^\/+/, '');
+        var filename = pathname.split('/').pop();
       if (parsed.hostname === 'onemorething.com.cn' && pathname.indexOf('/images/') >= 0 && filename) {
         return 'images/' + filename;
       }

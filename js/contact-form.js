@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const API_BASE = window.OMT_API_BASE || 'https://wanmoxing-cms.vercel.app';
+  const API_BASE = window.OMT_API_BASE || '';
 
   function initContactForm() {
     const form = document.querySelector('.contact-form');

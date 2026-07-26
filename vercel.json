@@ -18,5 +18,15 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/public/:path*",
+      "destination": "https://wanmoxing-cms.vercel.app/api/public/:path*"
+    },
+    {
+      "source": "/api/blob/:path*",
+      "destination": "https://wanmoxing-cms.vercel.app/api/blob/:path*"
+    }
   ]
 }
